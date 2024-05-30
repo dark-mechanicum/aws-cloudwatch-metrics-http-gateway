@@ -1,0 +1,22 @@
+{
+  "name": "@dark-mechanicum/aws-cloudwatch-metrics-http-gateway",
+  "version": "1.0.0",
+  "description": "HTTP Gateway to Receive and Process AWS Cloudwatch Metrics",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "docker:build": "docker build -t aws-cloudwatch-metrics-http-gateway:latest .",
+    "docker:run": "docker run --rm -p 3000:3000 --env-file .env --name aws-cloudwatch-metrics-http-gateway aws-cloudwatch-metrics-http-gateway:latest",
+    "test": "jest"
+  },
+  "author": "Andrei Kazakou <a.v.kazakou@gmail.com>",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "@types/node": "^20.12.13",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@aws-sdk/client-cloudwatch": "^3.583.0"
+  }
+}

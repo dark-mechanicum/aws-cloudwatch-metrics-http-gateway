@@ -1,0 +1,24 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+
+# production
+/dist
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Misc
+.DS_Store
+.*.local
+
+# Logs
+npm-debug.log*
+*.log
+
+# Optional eslint cache
+.eslintcache
+
+# dotenv environment variables file
+.env
