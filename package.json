@@ -17,6 +17,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@aws-sdk/client-cloudwatch": "^3.583.0"
+    "@aws-sdk/client-cloudwatch": "^3.583.0",
+    "fastest-validator": "^1.18.0"
   }
 }

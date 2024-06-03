@@ -5,6 +5,9 @@ import {
   type PutMetricDataCommandInput,
 } from "@aws-sdk/client-cloudwatch";
 
+import { validate } from './validator'
+import { type ValidationError } from "fastest-validator";
+
 // Create a CloudWatch client
 const cloudwatchClient = new CloudWatchClient();
 
@@ -31,8 +34,10 @@ const server = http.createServer((req, res) => {
   req.on("end", async () => {
     try {
       const metrics = JSON.parse(body) as PutMetricDataCommandInput;
-      if (!metrics.MetricData || !Array.isArray(metrics.MetricData)) {
-        reportError(res, 400, "Expected an PutMetricDataCommandInput object");
+      const validationResponse = validate(metrics);
+      if (validationResponse !== true) {
+        const message = (validationResponse as ValidationError[]).map(m => m.message).join(', ');
+        reportError(res, 400, `Validation Error: ${message}`);
         return;
       }
 
