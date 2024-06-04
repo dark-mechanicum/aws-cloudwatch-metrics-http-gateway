@@ -1,12 +1,9 @@
 name: Publish Docker image
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  release:
+    types:
+      - published
 
 jobs:
   build-and-push:
@@ -31,12 +28,17 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           platforms: linux/arm64,linux/amd64
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: akazakou/aws-cloudwatch-metrics-http-gateway:latest
+          tags: |
+            akazakou/aws-cloudwatch-metrics-http-gateway:${{ github.event.release.tag_name }}
+            akazakou/aws-cloudwatch-metrics-http-gateway:latest
           platforms: linux/arm64,linux/amd64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Update Docker Hub Repository Description
         uses: peter-evans/dockerhub-description@v4
