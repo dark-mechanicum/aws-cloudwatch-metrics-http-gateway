@@ -6,10 +6,27 @@ This Node.js application sets up an HTTP server that listens for POST requests c
 
 The server listens on the `/metrics` endpoint for POST requests. When it receives a request, it parses the body as JSON and expects it to conform to the `PutMetricDataCommandInput` format required by AWS CloudWatch. If the request is valid, it sends the metric data to CloudWatch using the AWS SDK.
 
+## Docker Hub Repository
+
+We have a [Docker Hub repository](https://hub.docker.com/r/akazakou/aws-cloudwatch-metrics-http-gateway) available with Docker images for this application. You can pull the image from Docker Hub using the following command:
+
+```bash
+docker pull akazakou/aws-cloudwatch-metrics-http-gateway:latest
+docker run --env-file ~/.env --rm -p 3000:3000 akazakou/aws-cloudwatch-metrics-http-gateway:latest
+```
+
+This will allow you to run the application in a Docker container without needing to manually build the image.
+
+## Source Code
+
+The source code for this application is available on GitHub. You can clone the repository, explore the code, and contribute to the project:
+
+[aws-cloudwatch-metrics-http-gateway on GitHub](https://github.com/dark-mechanicum/aws-cloudwatch-metrics-http-gateway)
+
 ## Supported Environment Variables
 
-* `PORT` [default: 3000] - Port a server will listen
-* `METRICS_FLUSH_INTERVAL` [default: 60000] - How often flush metrics to the AWS CLoudWatch API in Milliseconds
+- `PORT` [default: 3000] - Port a server will listen
+- `METRICS_FLUSH_INTERVAL` [default: 60000] - How often flush metrics to the AWS CLoudWatch API in Milliseconds
 
 ## Required AWS Permissions
 
@@ -20,7 +37,16 @@ To allow the execution of the application that interacts with AWS CloudWatch, th
 Here is an example of an IAM policy that grants the necessary permissions:
 
 ```json
-{ "Version": "2012-10-17", "Statement": [ { "Effect": "Allow", "Action": [ "cloudwatch:PutMetricData" ], "Resource": "*" } ] }
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["cloudwatch:PutMetricData"],
+      "Resource": "*"
+    }
+  ]
+}
 ```
 
 Ensure that you attach this policy to the IAM role or user that is used to execute the application.
@@ -30,7 +56,20 @@ Ensure that you attach this policy to the IAM role or user that is used to execu
 To send metric data to the server, make a POST request to `http://localhost:3000/metrics` with a JSON payload conforming to the `PutMetricDataCommandInput` format.
 
 Example payload:
-```json { "Namespace": "MyApp", "MetricData": [ { "MetricName": "Requests", "Dimensions": [ { "Name": "ServiceName", "Value": "UserService" } ], "Timestamp": "2023-01-01T12:00:00Z", "Value": 1, "Unit": "Count" } ] }```
+
+```json
+{
+  "Namespace": "MyApp",
+  "MetricData": [
+    {
+      "MetricName": "Requests",
+      "Dimensions": [{ "Name": "ServiceName", "Value": "UserService" }],
+      "Value": 1,
+      "Unit": "Count"
+    }
+  ]
+}
+```
 
 ## Graceful Shutdown
 
