@@ -4,10 +4,10 @@ WORKDIR /app
 
 # Copy package.json and package-lock.json (if available)
 COPY package.json ./
-COPY package-lock.json* ./
+COPY package-lock.json ./
 
 # Install node_modules
-RUN bun install
+RUN bun install --frozen-lockfile
 
 # === Final stage ===
 FROM imbios/bun-node:latest-20-alpine
