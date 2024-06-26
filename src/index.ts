@@ -24,13 +24,16 @@ const reportError = (
  * Actually creating and managing a server
  */
 const server = http.createServer((req, res) => {
+  // Add CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
   // allowing GET /healthcheck requests to verify that application are alive
-  if (req.method === "GET" || req.url == "/healthcheck") {
+  if (req.method === "GET" && req.url == "/healthcheck") {
     return res.writeHead(200).end();
   }
 
   // allowing POST /metrics requests to receive metrics
-  if (req.method !== "POST" || req.url !== "/metrics") {
+  if (req.method !== "POST" && req.url !== "/metrics") {
     return reportError(res, 404, "Not found");
   }
 
@@ -52,7 +55,7 @@ const server = http.createServer((req, res) => {
 
       metricsBuffer.add(metrics);
 
-      return res.writeHead(204).end();
+      return res.writeHead(202).end();
     } catch (err) {
       reportError(res, 400, (err as Error).message);
     }
@@ -80,6 +83,7 @@ process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);
 
 // start listening port and receive applications
-server.listen(process.env.PORT || 3000, () => {
-  console.info("Server listening on port 3000");
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+  console.info(`Server listening on port ${port}`);
 });
