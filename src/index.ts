@@ -26,6 +26,15 @@ const reportError = (
 const server = http.createServer((req, res) => {
   // Add CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
 
   // allowing GET /healthcheck requests to verify that application are alive
   if (req.method === "GET" && req.url == "/healthcheck") {
