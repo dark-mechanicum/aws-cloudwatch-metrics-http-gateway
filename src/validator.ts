@@ -32,18 +32,20 @@ enum MetricUnits {
 
 const v = new Validator();
 
+const allowedRegExpPattern = /^[a-zA-Z0-9-_.\/]+$/;
+
 const metricDimensionSchema: ValidationSchema = {
   type: "object",
   props: {
-    Name: { type: "string", min: 1, max: 255, pattern: /^[a-zA-Z0-9-_\/]+$/ },
-    Value: { type: "string", min: 1, max: 255, pattern: /^[a-zA-Z0-9-_\/]+$/ }
+    Name: { type: "string", min: 1, max: 255, pattern: allowedRegExpPattern },
+    Value: { type: "string", min: 1, max: 255, pattern: allowedRegExpPattern }
   }
 };
 
 const metricDataSchema: ValidationSchema = {
   type: "object",
   props: {
-    MetricName: { type: "string", min: 1, max: 255, pattern: /^[a-zA-Z0-9-_\/]+$/ },
+    MetricName: { type: "string", min: 1, max: 255, pattern: allowedRegExpPattern },
     Unit: { type: "enum", values: Array.from(Object.values(MetricUnits)) },
     Value: { type: "number", optional: true },
     Values: { type: "array", items: "number", optional: true },
