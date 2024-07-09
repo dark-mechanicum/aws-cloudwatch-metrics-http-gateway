@@ -35,15 +35,15 @@ const v = new Validator();
 const metricDimensionSchema: ValidationSchema = {
   type: "object",
   props: {
-    Name: { type: "string", min: 1, max: 255 },
-    Value: { type: "string", min: 1, max: 255 }
+    Name: { type: "string", min: 1, max: 255, pattern: /^[a-zA-Z0-9-_\/]+$/ },
+    Value: { type: "string", min: 1, max: 255, pattern: /^[a-zA-Z0-9-_\/]+$/ }
   }
 };
 
 const metricDataSchema: ValidationSchema = {
   type: "object",
   props: {
-    MetricName: { type: "string", min: 1, max: 255 },
+    MetricName: { type: "string", min: 1, max: 255, pattern: /^[a-zA-Z0-9-_\/]+$/ },
     Unit: { type: "enum", values: Array.from(Object.values(MetricUnits)) },
     Value: { type: "number", optional: true },
     Values: { type: "array", items: "number", optional: true },
