@@ -53,8 +53,8 @@ class MetricsBuffer {
     if (Array.isArray(metricData)) {
       for (const metric of metricData) {
         this.buffer.get(namespace as string)?.add({
-          Timestamp: timestamp,
           ...metric,
+          Timestamp: metric.Timestamp ? new Date(metric.Timestamp) : timestamp,
         } as MetricDatum);
       }
     }
