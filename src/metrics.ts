@@ -83,7 +83,7 @@ class MetricsBuffer {
 
         if (this.isDebug()) {
           console.debug(`Sending ${chunk.length} metrics to CloudWatch under namespace: ${namespace}`);
-          console.debug('Chunk content:', chunk);
+          console.debug(`Chunk content under ${namespace}:`, chunk);
         }
       }
 
