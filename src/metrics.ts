@@ -73,8 +73,10 @@ class MetricsBuffer {
     const promises = [];
 
     for (const [namespace, metrics] of this.buffer) {
-      for (let i = 0; i < metrics.size; i += 1000) {
-        const chunk: MetricDatum[] = Array.from(metrics.values()).slice(i, i + 1000);
+      const metricArray = Array.from(metrics.values());
+
+      for (let i = 0; i < metricArray.length; i += 1000) {
+        const chunk: MetricDatum[] = metricArray.slice(i, i + 1000);
         const request = new PutMetricDataCommand({ Namespace: namespace, MetricData: chunk });
 
         promises.push(
@@ -87,7 +89,8 @@ class MetricsBuffer {
         }
       }
 
-      this.buffer.clear();
+      // Clear metrics for the current namespace after processing
+      this.buffer.delete(namespace);
     }
 
     await Promise.allSettled(promises).then((result) => {
