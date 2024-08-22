@@ -57,7 +57,9 @@ class MetricsBuffer {
           Timestamp: metric.Timestamp ? new Date(metric.Timestamp) : timestamp,
         } as MetricDatum);
 
-        console.debug('Added metric to buffer:', metric);
+        if (this.isDebug()) {
+          console.debug('Added metric to buffer:', metric);
+        }
       }
     }
   }
@@ -79,7 +81,10 @@ class MetricsBuffer {
           cloudwatchClient.send(request)
         );
 
-        console.debug(`Sending ${chunk.length} metrics to CloudWatch under namespace: ${namespace}`);
+        if (this.isDebug()) {
+          console.debug(`Sending ${chunk.length} metrics to CloudWatch under namespace: ${namespace}`);
+          console.debug('Chunk content:', chunk);
+        }
       }
 
       this.buffer.clear();
@@ -88,7 +93,9 @@ class MetricsBuffer {
     await Promise.allSettled(promises).then((result) => {
       if (result.length === 0) return;
 
-      console.debug(`Executed ${promises.length} requests to the AWS CloudWatch API`);
+      if (this.isDebug()) {
+        console.debug(`Executed ${promises.length} requests to the AWS CloudWatch API`);
+      }
 
       result.forEach((r) => {
         if (r.status === 'rejected') {
@@ -96,6 +103,14 @@ class MetricsBuffer {
         }
       });
     });
+  }
+
+  /**
+   * Determines if the environment is in debug mode.
+   * @protected
+   */
+  protected isDebug(): boolean {
+    return process.env.DEBUG === 'true';
   }
 }
 
