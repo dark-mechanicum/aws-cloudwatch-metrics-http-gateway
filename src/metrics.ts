@@ -88,10 +88,9 @@ class MetricsBuffer {
           console.debug(`Chunk content under ${namespace}:`, JSON.stringify(chunk));
         }
       }
-
-      // Clear metrics for the current namespace after processing
-      this.buffer.delete(namespace);
     }
+
+    this.buffer.clear();
 
     await Promise.allSettled(promises).then((result) => {
       if (result.length === 0) return;
