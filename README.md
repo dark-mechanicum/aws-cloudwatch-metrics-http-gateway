@@ -88,6 +88,9 @@ The server can be stopped gracefully by sending a `SIGTERM` or `SIGINT` signal. 
 
 The server will start listening on port 3000 by default, or on the port specified by the `PORT` environment variable if it is set.
 
+## Detailed Logging
+If you need more insight into what's happening with your requests and operations, you can enable detailed logging. To do this, simply set the `DEBUG` environment variable before starting the server. With this enabled, you'll get a more comprehensive view of how your application is functioning.
+
 ## Local Docker Development
 
 Create `.env` file with `AWS_REGION`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` values to allow run that code in the docker container.

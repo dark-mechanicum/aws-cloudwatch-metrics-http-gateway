@@ -3,6 +3,9 @@ import { type ValidationError } from "fastest-validator";
 import http from "http";
 import { metricsBuffer } from "./metrics";
 import { validate } from './validator';
+import { default as logsParent } from './logger';
+
+const logger = logsParent.child({ module: 'main' });
 
 /**
  * Prepare HTTP Error response to the
@@ -17,7 +20,7 @@ const reportError = (
 ) => {
   res.writeHead(statusCode, { "Content-Type": "application/json" });
   res.end(JSON.stringify({ error: message }));
-  console.warn(`Error Response: ${message}`);
+  logger.warn(`Error Response: ${message}`);
 };
 
 /**
@@ -76,9 +79,9 @@ const server = http.createServer((req, res) => {
  * @param signal Description of signal was received
  */
 const shutdown = async (signal: string) => {
-  console.info(`Received ${signal}. Shutting down gracefully.`);
+  logger.info({ signal }, 'Shutting down gracefully');
   server.close(async () => {
-    console.info('HTTP server closed.');
+    logger.info('HTTP server closed');
 
     // Flushing data to AWS and stopping intervals
     await metricsBuffer.destroy();
@@ -94,5 +97,5 @@ process.on('SIGINT', shutdown);
 // start listening port and receive applications
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
-  console.info(`Server listening on port ${port}`);
+  logger.info({ port }, 'Server listening');
 });

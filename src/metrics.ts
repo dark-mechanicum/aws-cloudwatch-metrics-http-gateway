@@ -2,9 +2,12 @@ import {
   CloudWatchClient,
   PutMetricDataCommand,
   PutMetricDataCommandInput,
+  MetricDatum,
 } from "@aws-sdk/client-cloudwatch";
+import { default as logsParent } from './logger';
+import { count } from "console";
 
-type MetricDatum = PutMetricDataCommandInput['MetricData'];
+const logger = logsParent.child({ module: 'metrics' });
 
 /**
  * Initialization of CloudWatch Agent
@@ -57,9 +60,7 @@ class MetricsBuffer {
           Timestamp: metric.Timestamp ? new Date(metric.Timestamp) : timestamp,
         } as MetricDatum);
 
-        if (this.isDebug()) {
-          console.debug('Added metric to buffer:', JSON.stringify(metric));
-        }
+        logger.debug({ metric }, 'Added metric to buffer');
       }
     }
   }
@@ -71,22 +72,24 @@ class MetricsBuffer {
    */
   protected async flush() {
     const promises = [];
+    let eventsUploaded = 0;
 
     for (const [namespace, metrics] of this.buffer) {
-      const metricArray = Array.from(metrics.values());
+      const metricArray: MetricDatum[] = Array.from(metrics.values());
 
       for (let i = 0; i < metricArray.length; i += 1000) {
+        eventsUploaded += metricArray.length;
+
         const chunk: MetricDatum[] = metricArray.slice(i, i + 1000);
+
         const request = new PutMetricDataCommand({ Namespace: namespace, MetricData: chunk });
 
         promises.push(
           cloudwatchClient.send(request)
         );
 
-        if (this.isDebug()) {
-          console.debug(`Sending ${chunk.length} metrics to CloudWatch under namespace: ${namespace}`);
-          console.debug(`Chunk content under ${namespace}:`, JSON.stringify(chunk));
-        }
+        logger.debug({ count: chunk.length, namespace }, 'Sending metrics to CloudWatch under namespace');
+        logger.debug({ chunk, namespace }, 'Sending metrics to CloudWatch content');
       }
     }
 
@@ -95,13 +98,11 @@ class MetricsBuffer {
     await Promise.allSettled(promises).then((result) => {
       if (result.length === 0) return;
 
-      if (this.isDebug()) {
-        console.debug(`Executed ${promises.length} requests to the AWS CloudWatch API`);
-      }
+      logger.info({ metrics: eventsUploaded, requests: promises.length }, 'Uploaded metrics to AWS CloudWatch API');
 
       result.forEach((r) => {
         if (r.status === 'rejected') {
-          console.error(`Rejected request to the AWS CloudWatch API: ${r.reason.toString()}`);
+          logger.error({ reason: r.reason.toString() }, 'Rejected request to the AWS CloudWatch API');
         }
       });
     });

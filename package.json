@@ -12,12 +12,13 @@
   "author": "Andrei Kazakou <a.v.kazakou@gmail.com>",
   "license": "BSD-3-Clause",
   "devDependencies": {
-    "@types/node": "^20.12.13",
+    "@types/node": "^22.5.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@aws-sdk/client-cloudwatch": "^3.583.0",
-    "fastest-validator": "^1.18.0"
+    "@aws-sdk/client-cloudwatch": "^3.635.0",
+    "fastest-validator": "^1.19.0",
+    "pino": "^9.3.2"
   }
 }
