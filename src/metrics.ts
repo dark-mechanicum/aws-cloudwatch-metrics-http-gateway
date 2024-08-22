@@ -56,6 +56,8 @@ class MetricsBuffer {
           ...metric,
           Timestamp: metric.Timestamp ? new Date(metric.Timestamp) : timestamp,
         } as MetricDatum);
+
+        console.debug('Added metric to buffer:', metric);
       }
     }
   }
@@ -76,6 +78,8 @@ class MetricsBuffer {
         promises.push(
           cloudwatchClient.send(request)
         );
+
+        console.debug(`Sending ${chunk.length} metrics to CloudWatch under namespace: ${namespace}`);
       }
 
       this.buffer.clear();
@@ -90,8 +94,8 @@ class MetricsBuffer {
         if (r.status === 'rejected') {
           console.error(`Rejected request to the AWS CloudWatch API: ${r.reason.toString()}`);
         }
-      })
-    })
+      });
+    });
   }
 }
 
