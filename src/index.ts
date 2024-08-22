@@ -20,7 +20,7 @@ const reportError = (
 ) => {
   res.writeHead(statusCode, { "Content-Type": "application/json" });
   res.end(JSON.stringify({ error: message }));
-  logger.warn(`Error Response: ${message}`);
+  logger.warn({ errorMessage: message }, 'Error Response from API');
 };
 
 /**
