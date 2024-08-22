@@ -58,7 +58,7 @@ class MetricsBuffer {
         } as MetricDatum);
 
         if (this.isDebug()) {
-          console.debug('Added metric to buffer:', metric);
+          console.debug('Added metric to buffer:', JSON.stringify(metric));
         }
       }
     }
@@ -83,7 +83,7 @@ class MetricsBuffer {
 
         if (this.isDebug()) {
           console.debug(`Sending ${chunk.length} metrics to CloudWatch under namespace: ${namespace}`);
-          console.debug(`Chunk content under ${namespace}:`, chunk);
+          console.debug(`Chunk content under ${namespace}:`, JSON.stringify(chunk));
         }
       }
 
