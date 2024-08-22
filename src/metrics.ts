@@ -76,9 +76,9 @@ class MetricsBuffer {
 
     for (const [namespace, metrics] of this.buffer) {
       const metricArray: MetricDatum[] = Array.from(metrics.values());
+      eventsUploaded += metricArray.length;
 
       for (let i = 0; i < metricArray.length; i += 1000) {
-        eventsUploaded += metricArray.length;
 
         const chunk: MetricDatum[] = metricArray.slice(i, i + 1000);
 
