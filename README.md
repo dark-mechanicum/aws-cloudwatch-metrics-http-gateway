@@ -71,6 +71,39 @@ Example payload:
 }
 ```
 
+## Sending batch metrics in one request
+
+The server now supports a new endpoint `/batch` that allows for batch processing of metric data. This endpoint accepts a POST request with an array of `PutMetricDataCommandInput` objects. Each object in the array represents a separate batch of metric data to be sent to CloudWatch. To use this endpoint, send your POST request to `http://localhost:3000/batch`
+
+Example payload for `/batch` endpoint:
+
+```json
+[
+  {
+    "Namespace": "MyApp",
+    "MetricData": [
+      {
+        "MetricName": "Requests",
+        "Dimensions": [{ "Name": "ServiceName", "Value": "UserService" }],
+        "Value": 1,
+        "Unit": "Count"
+      }
+    ]
+  },
+  {
+    "Namespace": "MyApp",
+    "MetricData": [
+      {
+        "MetricName": "Errors",
+        "Dimensions": [{ "Name": "ServiceName", "Value": "UserService" }],
+        "Value": 0,
+        "Unit": "Count"
+      }
+    ]
+  }
+]
+
+
 ## Graceful Shutdown
 
 The server can be stopped gracefully by sending a `SIGTERM` or `SIGINT` signal. This will allow the server to finish processing any ongoing requests before shutting down.
