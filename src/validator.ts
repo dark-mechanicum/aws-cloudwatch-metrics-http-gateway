@@ -69,8 +69,8 @@ const putMetricDataCommandSchema: ValidationSchema = {
   $$root: true,
   type: 'object',
   props: {
-    MetricData: { type: 'array', items: metricDataSchema, max: 1000 },
-    Namespace: { type: 'string', pattern: '[^:].*', min: 1, max: 255 },
+    MetricData: { type: 'array', items: metricDataSchema, min: 1, max: 1000 },
+    Namespace: { type: 'string', pattern: /^(?!:).*/gm, min: 1, max: 255 },
   },
 };
 

@@ -4,7 +4,7 @@
   "description": "HTTP Gateway to Receive and Process AWS Cloudwatch Metrics",
   "author": "Andrei Kazakou <a.v.kazakou@gmail.com>",
   "license": "BSD-3-Clause",
-  "main": "index.js",
+  "main": "src/index.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/dark-mechanicum/aws-cloudwatch-metrics-http-gateway.git"
@@ -19,14 +19,16 @@
     "Metrics"
   ],
   "engines": {
-    "node": ">=22"
+    "node": ">=20",
+    "bun": ">=1.1.33"
   },
   "scripts": {
     "dev": "ts-node src/index.ts",
     "docker:build": "docker build -t aws-cloudwatch-metrics-http-gateway:latest .",
     "docker:run": "docker run --rm -p 3000:3000 --env-file .env --name aws-cloudwatch-metrics-http-gateway aws-cloudwatch-metrics-http-gateway:latest",
     "test": "jest",
-    "lint": "gts fix && gts lint"
+    "lint": "gts lint",
+    "lint:fix": "gts fix"
   },
   "dependencies": {
     "@aws-sdk/client-cloudwatch": "^3.635.0",
@@ -34,9 +36,12 @@
     "pino": "^9.3.2"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
     "@types/node": "^22.7.5",
+    "gts": "^6.0.2",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.3",
-    "gts": "^6.0.2"
+    "typescript": "^5.6.3"
   }
 }
