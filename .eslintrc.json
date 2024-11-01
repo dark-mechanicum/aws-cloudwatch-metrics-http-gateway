@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "./node_modules/gts"
+  ],
+  "rules": {
+    "max-len": ["error", { "code": 120 }],
+    "object-curly-spacing": ["error", "always"],
+    "prettier/prettier": [
+      "error",
+      {
+        "bracketSpacing": true,
+        "printWidth": 120
+      }
+    ]
+  }
+}

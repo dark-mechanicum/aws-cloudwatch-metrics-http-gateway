@@ -1,4 +1,5 @@
 {
+  "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
     "target": "ES2020",   // Set based on your environment's capabilities
     "module": "CommonJS", // Compatible with Node.js module system

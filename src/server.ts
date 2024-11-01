@@ -35,7 +35,7 @@ const parseRequestBody = (req: http.IncomingMessage): Promise<string> => {
       resolve(body);
     });
 
-    req.on('error', (err) => {
+    req.on('error', err => {
       console.error({ error: err }, "Can't parse request body");
       reject(err);
     });
@@ -48,15 +48,21 @@ const parseRequestBody = (req: http.IncomingMessage): Promise<string> => {
  * @returns Promise resolving to an object indicating success or errors
  */
 const processMetrics = async (
-  metrics: PutMetricDataCommandInput[]
-): Promise<{ success: boolean; errors?: { index: number; errors: ValidationError[] }[] }> => {
+  metrics: PutMetricDataCommandInput[],
+): Promise<{
+  success: boolean;
+  errors?: { index: number; errors: ValidationError[] }[];
+}> => {
   const errors: { index: number; errors: ValidationError[] }[] = [];
 
   for (let i = 0; i < metrics.length; i++) {
     const metric = metrics[i];
     const validationResponse = validate(metric);
     if (validationResponse !== true) {
-      errors.push({ index: i, errors: validationResponse as ValidationError[] });
+      errors.push({
+        index: i,
+        errors: validationResponse as ValidationError[],
+      });
     } else {
       metricsBuffer.add(metric);
     }
@@ -83,7 +89,7 @@ const handleMetrics = async (req: http.IncomingMessage, res: http.ServerResponse
       res.writeHead(202).end();
     } else {
       const errorMessages = result.errors!.map(
-        (e) => `Metric at index ${e.index}: ` + e.errors.map((err) => err.message).join(', ')
+        e => `Metric at index ${e.index}: ` + e.errors.map(err => err.message).join(', '),
       );
       reportError(res, 400, `Validation Errors: ${errorMessages.join('; ')}`);
     }
@@ -111,7 +117,7 @@ const handleBatch = async (req: http.IncomingMessage, res: http.ServerResponse) 
       res.writeHead(202).end();
     } else {
       const errorMessages = result.errors!.map(
-        (e) => `Metric at index ${e.index}: ` + e.errors.map((err) => err.message).join(', ')
+        e => `Metric at index ${e.index}: ` + e.errors.map(err => err.message).join(', '),
       );
       reportError(res, 400, `Validation Errors: ${errorMessages.join('; ')}`);
     }
@@ -174,7 +180,10 @@ const server = http.createServer((req, res) => {
 
   // Route handling
   if (router[path] && router[path][method]) {
-    router[path][method](req, res);
+    router[path][method](req, res).catch(err => {
+      logger.error({ err }, 'Error handling request');
+      reportError(res, 500, 'Internal Server Error');
+    });
   } else {
     const { url, method } = req;
     logger.warn({ url, method }, 'Invalid request URL or method');

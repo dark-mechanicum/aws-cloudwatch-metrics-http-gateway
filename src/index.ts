@@ -16,6 +16,7 @@ const shutdown = async (signal: string) => {
     // Flush data to AWS and stop intervals
     await metricsBuffer.destroy();
 
+    // eslint-disable-next-line n/no-process-exit
     process.exit(0);
   });
 };

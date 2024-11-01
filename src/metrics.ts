@@ -3,9 +3,8 @@ import {
   PutMetricDataCommand,
   PutMetricDataCommandInput,
   MetricDatum,
-} from "@aws-sdk/client-cloudwatch";
+} from '@aws-sdk/client-cloudwatch';
 import { default as logsParent } from './logger';
-import { count } from "console";
 
 const logger = logsParent.child({ module: 'metrics' });
 
@@ -79,14 +78,14 @@ class MetricsBuffer {
       eventsUploaded += metricArray.length;
 
       for (let i = 0; i < metricArray.length; i += 1000) {
-
         const chunk: MetricDatum[] = metricArray.slice(i, i + 1000);
 
-        const request = new PutMetricDataCommand({ Namespace: namespace, MetricData: chunk });
+        const request = new PutMetricDataCommand({
+          Namespace: namespace,
+          MetricData: chunk,
+        });
 
-        promises.push(
-          cloudwatchClient.send(request)
-        );
+        promises.push(cloudwatchClient.send(request));
 
         logger.debug({ count: chunk.length, namespace }, 'Sending metrics to CloudWatch under namespace');
         logger.debug({ chunk, namespace }, 'Sending metrics to CloudWatch content');
@@ -95,12 +94,12 @@ class MetricsBuffer {
 
     this.buffer.clear();
 
-    await Promise.allSettled(promises).then((result) => {
+    await Promise.allSettled(promises).then(result => {
       if (result.length === 0) return;
 
       logger.info({ metrics: eventsUploaded, requests: promises.length }, 'Uploaded metrics to AWS CloudWatch API');
 
-      result.forEach((r) => {
+      result.forEach(r => {
         if (r.status === 'rejected') {
           logger.error({ reason: r.reason.toString() }, 'Rejected request to the AWS CloudWatch API');
         }
